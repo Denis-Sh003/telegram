@@ -1,4 +1,14 @@
 # telegram bot
+This telegram bot can start a regular computer by emulating the power button presses.\
+After installing it, the following commands will be available:
+```
+list of available commands:
+     / id - user id
+     / curlsh - find out ip telegram bot
+     / powersh - simulate pressing the power button ~ 0.5c
+     / longpowersh - simulate a long press of the power button ~ 8c
+     / pingsh - check server availability via ping
+```
 install python-telegram-bot
 pip3 install python-telegram-bot==12 --upgrade
 
