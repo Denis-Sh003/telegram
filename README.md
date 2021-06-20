@@ -15,9 +15,12 @@ ExecStart=/home/pi/scripts/bot/bot.sh
 WantedBy=multi-user.target
 ```
 #We issue the necessary rights to the file.
+```
 chmod 664 /etc/systemd/system/telegram-bot.service
-
+```
+```
 systemctl daemon-reload
 systemctl enable telegram-bot.service
 systemctl start telegram-bot.service
 systemctl status telegram-bot.service
+```
