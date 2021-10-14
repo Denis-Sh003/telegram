@@ -39,6 +39,10 @@ After=network.target
 [Service]
 Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games:/snap/bin:/home/pi/scripts/bot
 ExecStart=/home/pi/scripts/bot/bot.sh
+StartLimitIntervalSec=500
+StartLimitBurst=5
+Restart=always
+RestartSec=5s
 [Install]
 WantedBy=multi-user.target
 ```
