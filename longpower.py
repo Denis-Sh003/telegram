@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import time
 import RPi.GPIO as GPIO
@@ -10,10 +10,9 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(KEY, GPIO.OUT)
 GPIO.output(KEY, GPIO.LOW)
 
-timeout = 8
+timeout = 5
 
 GPIO.output(KEY, GPIO.HIGH)
 time.sleep(timeout)
 GPIO.output(KEY, GPIO.LOW)
 
-print ("Длительное нажатие кнопки питания. ~ 8.с")

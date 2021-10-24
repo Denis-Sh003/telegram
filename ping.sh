@@ -1,10 +1,10 @@
 #!/bin/bash
-ping -c 4 10.1.2.10  >> /dev/null 
+ping -c 1 10.1.2.10  >> /dev/null 
 
 if [ "$?" = "0" ]; then
- echo " Сервер запущен"
+ echo " server on ✅"
 else 
- echo " Сервер выключен"
+ echo " server off ❌"
 fi
 
 exit 0 

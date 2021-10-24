@@ -16,4 +16,3 @@ GPIO.output(KEY, GPIO.HIGH)
 time.sleep(timeout)
 GPIO.output(KEY, GPIO.LOW)
 
-print ("Кнопка питания сервера была нажата")

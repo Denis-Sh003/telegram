@@ -30,6 +30,13 @@ The ground of the raspberry must be connected to the ground of the power button.
 
 When using a relay, everything is much easier. You just need to supply ground, + 5V and a control signal to the relay. On the other hand, just plug in the wires from the power button.
 
+# Config telegram bot
+vim ./config.py
+```
+token = '*' # token бота полученный у BotFather
+admin = ['*'] # пользоватльские ID телеграма которым разрешен доступ к функциям питания.
+```
+
 # Creating a service for telegram bot
 vim /etc/systemd/system/telegram-bot.service
 ```
@@ -57,4 +64,10 @@ systemctl daemon-reload
 systemctl enable telegram-bot.service
 systemctl start telegram-bot.service
 systemctl status telegram-bot.service
+```
+
+Docker is also available.
+```
+docker build -t telebot .
+docker run --name telebot --restart=always --privileged -d telebot
 ```

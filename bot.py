@@ -1,18 +1,14 @@
 #!/usr/bin/python3
-import config 
-import telegram
-import os
+import telebot
+from telebot import types
+import config
 import subprocess
 import sys
 import shlex
-import datetime
-from subprocess import Popen, PIPE
-from telegram.ext import CommandHandler
-from imp import reload 
+import os
+from imp import reload
 
-from telegram.ext import Updater
-updater = Updater(token=config.token)
-dispatcher = updater.dispatcher
+bot = telebot.TeleBot(token=config.token)
 
 def run_command(command):
     process = subprocess.Popen(shlex.split(command), stdout=subprocess.PIPE)
@@ -30,76 +26,62 @@ def run_command(command):
     rc = process.poll()
     return rc
 
+@bot.message_handler(commands=['start'])
+def start_command(message):
+    bot.send_message(message.chat.id, "Hello! This is a bot installed on rasspberry Pi to remotely turn on a home server. Enter /help for help.")
 
-def start(update, context):
-    context.bot.sendMessage(chat_id=update.message.chat_id, text='Text One')
-    updater.dispatcher.add_handler(CommandHandler('start', start))
+@bot.message_handler(commands=['help'])
+def start(message):
+	markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+	btn1 = types.KeyboardButton('/powersh')
+	btn2 = types.KeyboardButton('/curlsh')
+	btn3 = types.KeyboardButton('/pingsh')
+	btn4 = types.KeyboardButton('/id')
+	btn5 = types.KeyboardButton('/longpowersh')
+	markup.add(btn1, btn2, btn3, btn4, btn5)
+	send_mess = f"<b>Hello {message.from_user.first_name} {message.from_user.last_name}</b>!\nFor convenience, you can use the button.  \
+        \n/id - id user\
+        \n/curlsh - ip telegram bot server\
+        \n/powersh - key power to push\
+        \n/longpowersh - key power to push ~5s\
+        \n/pingsh - local server status"
+	bot.send_message(message.chat.id, send_mess, parse_mode='html', reply_markup=markup)
 
-def id(update, context):
-    userid = update.message.from_user.id
-    context.bot.sendMessage(chat_id=update.message.chat_id, text=userid)
-
-def help(update, context):
+@bot.message_handler(commands=['curlsh'])
+def start_command(message):
     reload(config)
-    context.bot.sendMessage(chat_id=update.message.chat_id, text='''список доступных команд:
-    /id - id пользователя
-    /curlsh - узнать ip telegram бота
-    /powersh - имитировать нажатие кнопки питания ~0.5c
-    /longpowersh - имитировать долгое нажатие кнопки питания ~8c
-    /pingsh - проверить доступность сервера через ping
-    ''')
-
-
-#функция команады curlsh
-def curlsh(update, context):
-    reload(config)
-    user = str(update.message.from_user.id)
+    user = str(message.from_user.id)
     if user in config.admin: #если пользовательский id в списке admin то команда выполняется
         run_command("curl.sh")
-        context.bot.sendMessage(chat_id=update.message.chat_id, text=textoutput)
+        bot.send_message(message.chat.id, text=textoutput)
 
-def powersh(update, context):
+@bot.message_handler(commands=['pingsh'])
+def start_command(message):
     reload(config)
-    user = str(update.message.from_user.id)
-    if user in config.admin: #если пользовательский id в списке admin то команда выполняется
-        run_command("power.py")
-        context.bot.sendMessage(chat_id=update.message.chat_id, text=textoutput)
-
-def pingsh(update, context):
-    reload(config)
-    user = str(update.message.from_user.id)
+    user = str(message.from_user.id)
     if user in config.admin: #если пользовательский id в списке admin то команда выполняется
         run_command("ping.sh")
-        context.bot.sendMessage(chat_id=update.message.chat_id, text=textoutput)
+        bot.send_message(message.chat.id, text=textoutput)
 
-def longpowersh(update, context):
+@bot.message_handler(commands=['powersh'])
+def start_command(message):
     reload(config)
-    user = str(update.message.from_user.id)
+    user = str(message.from_user.id)
     if user in config.admin: #если пользовательский id в списке admin то команда выполняется
-        run_command("longpower.py")
-        context.bot.sendMessage(chat_id=update.message.chat_id, text=textoutput)
+        run_command("power.sh")
+        bot.send_message(message.chat.id, text=textoutput)
 
-start_handler = CommandHandler('start', start)
-dispatcher.add_handler(start_handler)
+@bot.message_handler(commands=['longpowersh'])
+def start_command(message):
+    reload(config)
+    user = str(message.from_user.id)
+    if user in config.admin: #если пользовательский id в списке admin то команда выполняется
+        run_command("longpower.sh")
+        bot.send_message(message.chat.id, text=textoutput)
 
-curlsh_handler = CommandHandler('curlsh', curlsh)
-dispatcher.add_handler(curlsh_handler)
+@bot.message_handler(commands=['id'])
+def start_command(message):
+    userid = message.from_user.id
+    bot.send_message(message.chat.id, text=userid)
 
-curlsh_handler = CommandHandler('powersh', powersh)
-dispatcher.add_handler(curlsh_handler)
-
-curlsh_handler = CommandHandler('longpowersh', longpowersh)
-dispatcher.add_handler(curlsh_handler)
-
-
-curlsh_handler = CommandHandler('pingsh', pingsh)
-dispatcher.add_handler(curlsh_handler)
-
-
-myid_handler = CommandHandler('id', id)
-dispatcher.add_handler(myid_handler)
-
-help_handler = CommandHandler('help', help)
-dispatcher.add_handler(help_handler)
-
-updater.start_polling()
+bot.polling()
