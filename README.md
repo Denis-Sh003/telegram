@@ -66,8 +66,10 @@ systemctl start telegram-bot.service
 systemctl status telegram-bot.service
 ```
 
-Docker is also available.
+Docker is also available. For Raspbian, upgrade libseccomp manually on the host system by using:
 ```
+curl http://ftp.us.debian.org/debian/pool/main/libs/libseccomp/libseccomp2_2.5.1-1_armhf.deb --output libseccomp2_2.5.1-1_armhf.deb
+sudo dpkg -i libseccomp2_2.5.1-1_armhf.deb
 docker build -t telebot .
 docker run --name telebot --restart=always --privileged -d telebot
 ```
